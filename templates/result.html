@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Prediction Result</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #eef4ff, #f8fbff);
+            color: #1f2937;
+        }
+
+        .page {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px 15px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 700px;
+            background: white;
+            border-radius: 18px;
+            padding: 35px;
+            box-shadow: 0 10px 35px rgba(30, 60, 100, 0.10);
+            border: 1px solid #e5ebf3;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .header h1 {
+            margin: 0 0 8px;
+            color: #173b68;
+        }
+
+        .header p {
+            color: #6b7280;
+            font-size: 14px;
+            margin: 0;
+        }
+
+        /* Patient */
+
+        .patient {
+            background: #f7faff;
+            border: 1px solid #e0e9f4;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .patient-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .patient-item span {
+            display: block;
+            font-size: 12px;
+            color: #718096;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .patient-item strong {
+            color: #1e3a5f;
+        }
+
+        /* Result */
+
+        .result-box {
+            text-align: center;
+            border-radius: 14px;
+            padding: 30px 20px;
+            background: #f7faff;
+            border: 1px solid #dce7f3;
+        }
+
+        .result-label {
+            font-size: 13px;
+            color: #718096;
+            margin-bottom: 10px;
+        }
+
+        .result {
+            font-size: 27px;
+            font-weight: bold;
+            color: #173b68;
+        }
+
+        .probability {
+            margin-top: 18px;
+            color: #596678;
+            font-size: 15px;
+        }
+
+        .probability strong {
+            color: #2563a6;
+            font-size: 19px;
+        }
+
+        /* Model */
+
+        .model-info {
+            margin-top: 22px;
+            padding: 18px;
+            border-radius: 10px;
+            background: #fafbfd;
+            border: 1px solid #e8edf3;
+            color: #667085;
+            font-size: 13px;
+            line-height: 1.6;
+            text-align: center;
+        }
+
+        .accuracy {
+            color: #2563a6;
+            font-weight: bold;
+        }
+
+        /* Button */
+
+        .back-btn {
+            display: block;
+            width: 100%;
+            margin-top: 22px;
+            padding: 14px;
+            background: linear-gradient(135deg, #173b68, #2563a6);
+            color: white;
+            text-decoration: none;
+            border-radius: 9px;
+            font-weight: bold;
+            text-align: center;
+            transition: 0.2s;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 18px rgba(37, 99, 166, 0.22);
+        }
+
+        .disclaimer {
+            text-align: center;
+            margin-top: 18px;
+            font-size: 11px;
+            color: #8993a1;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 550px) {
+
+            .container {
+                padding: 25px 20px;
+            }
+
+            .patient-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .result {
+                font-size: 22px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="page">
+
+    <div class="container">
+
+        <div class="header">
+
+            <h1>Prediction Result</h1>
+
+            <p>
+                Machine learning prediction based on voice measurement features
+            </p>
+
+        </div>
+
+
+        <!-- Patient Information -->
+
+        <div class="patient">
+
+            <div class="patient-grid">
+
+                <div class="patient-item">
+
+                    <span>Patient ID</span>
+
+                    <strong>
+                        {{ patient_id }}
+                    </strong>
+
+                </div>
+
+
+                <div class="patient-item">
+
+                    <span>Name</span>
+
+                    <strong>
+                        {{ patient.name }}
+                    </strong>
+
+                </div>
+
+
+                <div class="patient-item">
+
+                    <span>Age</span>
+
+                    <strong>
+                        {{ patient.age }} years
+                    </strong>
+
+                </div>
+
+
+                <div class="patient-item">
+
+                    <span>Gender</span>
+
+                    <strong>
+                        {{ patient.gender }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Prediction -->
+
+        <div class="result-box">
+
+            <div class="result-label">
+                Prediction
+            </div>
+
+            <div class="result">
+                {{ result }}
+            </div>
+
+
+            {% if probability is not none %}
+
+            <div class="probability">
+
+                Model probability of Parkinson's:
+
+                <strong>
+                    {{ "%.2f"|format(probability) }}%
+                </strong>
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- Model Information -->
+
+        <div class="model-info">
+
+            <p>
+                The prediction was generated using the trained machine
+                learning model based on 22 voice measurement features.
+            </p>
+
+            <p>
+                Model Test Accuracy:
+                <span class="accuracy">92.31%</span>
+            </p>
+
+        </div>
+
+
+        <a class="back-btn" href="/">
+            ← Select Another Patient
+        </a>
+
+
+        <div class="disclaimer">
+
+            This application is developed for academic and demonstration
+            purposes and should not be used as a medical diagnosis.
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

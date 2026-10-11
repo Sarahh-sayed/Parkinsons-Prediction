@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Parkinson's Disease Prediction</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #eef4ff, #f8fbff);
+            color: #1f2937;
+        }
+
+        .page {
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        /* Header */
+
+        .header {
+            background: linear-gradient(135deg, #163b68, #2563a6);
+            color: white;
+            padding: 35px;
+            border-radius: 18px;
+            box-shadow: 0 10px 30px rgba(30, 70, 120, 0.18);
+            margin-bottom: 25px;
+        }
+
+        .header h1 {
+            margin: 0 0 10px;
+            font-size: 32px;
+        }
+
+        .header p {
+            margin: 0;
+            color: #dbeafe;
+            line-height: 1.6;
+            max-width: 750px;
+        }
+
+        .badge {
+            display: inline-block;
+            margin-bottom: 15px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.15);
+            font-size: 13px;
+        }
+
+        /* Cards */
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 22px;
+            box-shadow: 0 5px 22px rgba(30, 60, 100, 0.08);
+            border: 1px solid #e7edf5;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 0 0 18px;
+            font-size: 20px;
+            color: #173b63;
+        }
+
+        .section-title span {
+            width: 7px;
+            height: 25px;
+            background: #2563a6;
+            border-radius: 5px;
+            display: inline-block;
+        }
+
+        /* Patient Selection */
+
+        .select-label {
+            display: block;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #4b5563;
+        }
+
+        select {
+            width: 100%;
+            padding: 14px 15px;
+            font-size: 15px;
+            border: 1px solid #ccd7e5;
+            border-radius: 9px;
+            background: white;
+            color: #1f2937;
+            outline: none;
+            cursor: pointer;
+        }
+
+        select:focus {
+            border-color: #2563a6;
+            box-shadow: 0 0 0 3px rgba(37, 99, 166, 0.10);
+        }
+
+        /* Patient Info */
+
+        .patient-info {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .info-box {
+            background: #f7faff;
+            border: 1px solid #e1eaf4;
+            border-radius: 11px;
+            padding: 18px;
+        }
+
+        .info-label {
+            display: block;
+            font-size: 12px;
+            color: #718096;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 7px;
+        }
+
+        .info-value {
+            font-size: 16px;
+            font-weight: bold;
+            color: #1e3a5f;
+        }
+
+        /* Measurements */
+
+        .measurement-note {
+            color: #6b7280;
+            font-size: 13px;
+            line-height: 1.6;
+            margin-top: -5px;
+            margin-bottom: 20px;
+        }
+
+        .measurements {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 13px;
+        }
+
+        .measurement {
+            background: #f8fafc;
+            border: 1px solid #e5eaf0;
+            border-radius: 9px;
+            padding: 13px;
+        }
+
+        .measurement label {
+            display: block;
+            font-size: 12px;
+            font-weight: bold;
+            color: #5b6777;
+            margin-bottom: 7px;
+        }
+
+        .measurement input {
+            width: 100%;
+            padding: 9px 10px;
+            border: 1px solid #d8e0e8;
+            border-radius: 6px;
+            background: white;
+            color: #26384d;
+            font-size: 13px;
+        }
+
+        /* Button */
+
+        .predict-btn {
+            width: 100%;
+            margin-top: 22px;
+            padding: 16px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #173b68, #2563a6);
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 6px 15px rgba(37, 99, 166, 0.2);
+            transition: 0.2s;
+        }
+
+        .predict-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 9px 20px rgba(37, 99, 166, 0.28);
+        }
+
+        /* Footer info */
+
+        .bottom-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 14px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid #e7edf5;
+            box-shadow: 0 4px 15px rgba(30, 60, 100, 0.06);
+        }
+
+        .stat-number {
+            font-size: 25px;
+            font-weight: bold;
+            color: #2563a6;
+        }
+
+        .stat-label {
+            margin-top: 5px;
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .disclaimer {
+            text-align: center;
+            margin-top: 22px;
+            font-size: 12px;
+            color: #7a8594;
+            line-height: 1.5;
+        }
+
+        /* Responsive */
+
+        @media (max-width: 750px) {
+            .patient-info {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 550px) {
+            .page {
+                padding: 20px 12px;
+            }
+
+            .header {
+                padding: 25px;
+            }
+
+            .header h1 {
+                font-size: 25px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .patient-info,
+            .measurements,
+            .bottom-info {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="page">
+
+    <div class="container">
+
+        <!-- Header -->
+
+        <div class="header">
+
+            <div class="badge">
+                AI Healthcare • Machine Learning
+            </div>
+
+            <h1>Parkinson's Disease Prediction</h1>
+
+            <p>
+                A machine learning-based system that analyzes voice measurement
+                features to predict the presence of Parkinson's disease.
+            </p>
+
+        </div>
+
+
+        <!-- Patient Selection -->
+
+        <div class="card">
+
+            <h2 class="section-title">
+                <span></span>
+                Patient Selection
+            </h2>
+
+            <label class="select-label">
+                Select a demo patient
+            </label>
+
+            <select id="patientSelect" onchange="loadPatient()">
+
+                <option value="">
+                    -- Select Patient --
+                </option>
+
+                {% for patient_id, patient in patients.items() %}
+
+                <option value="{{ patient_id }}"
+                    {% if selected_patient == patient_id %}selected{% endif %}>
+
+                    {{ patient.name }} ({{ patient_id }})
+
+                </option>
+
+                {% endfor %}
+
+            </select>
+
+        </div>
+
+
+        {% if selected_patient %}
+
+
+        <!-- Patient Information -->
+
+        <div class="card">
+
+            <h2 class="section-title">
+                <span></span>
+                Patient Information
+            </h2>
+
+            <div class="patient-info">
+
+                <div class="info-box">
+                    <span class="info-label">Patient ID</span>
+                    <span class="info-value">
+                        {{ selected_patient }}
+                    </span>
+                </div>
+
+                <div class="info-box">
+                    <span class="info-label">Name</span>
+                    <span class="info-value">
+                        {{ patient_info.name }}
+                    </span>
+                </div>
+
+                <div class="info-box">
+                    <span class="info-label">Age</span>
+                    <span class="info-value">
+                        {{ patient_info.age }} years
+                    </span>
+                </div>
+
+                <div class="info-box">
+                    <span class="info-label">Gender</span>
+                    <span class="info-value">
+                        {{ patient_info.gender }}
+                    </span>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Voice Measurements -->
+
+        <div class="card">
+
+            <h2 class="section-title">
+                <span></span>
+                Voice Measurements
+            </h2>
+
+            <p class="measurement-note">
+                The following 22 voice-related features are automatically
+                loaded from the selected patient's demo voice-recording data.
+                These features are used as input to the machine learning model.
+            </p>
+
+            <div class="measurements">
+
+                {% for feature, value in measurements.items() %}
+
+                <div class="measurement">
+
+                    <label>{{ feature }}</label>
+
+                    <input
+                        type="text"
+                        value="{{ value }}"
+                        readonly
+                    >
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+
+            <!-- Prediction -->
+
+            <form method="POST" action="/predict">
+
+                <input
+                    type="hidden"
+                    name="patient_id"
+                    value="{{ selected_patient }}"
+                >
+
+                <button class="predict-btn" type="submit">
+                    Predict Parkinson's Disease
+                </button>
+
+            </form>
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- Model Information -->
+
+        <div class="bottom-info">
+
+            <div class="stat-card">
+
+                <div class="stat-number">
+                    92.31%
+                </div>
+
+                <div class="stat-label">
+                    Model Test Accuracy
+                </div>
+
+            </div>
+
+            <div class="stat-card">
+
+                <div class="stat-number">
+                    22
+                </div>
+
+                <div class="stat-label">
+                    Voice Features Used
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="disclaimer">
+            This application is developed for academic and demonstration
+            purposes. It is not intended to provide a medical diagnosis.
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+function loadPatient() {
+
+    const patient =
+        document.getElementById("patientSelect").value;
+
+    if (patient) {
+
+        window.location.href =
+            "/patient/" + patient;
+
+    }
+
+}
+
+</script>
+
+</body>
+
+</html>
